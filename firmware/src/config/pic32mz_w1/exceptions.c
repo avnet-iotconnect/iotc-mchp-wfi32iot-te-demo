@@ -70,7 +70,7 @@
 */
 
 /* Address of instruction that caused the exception. */
-static unsigned int _excep_addr;
+volatile unsigned int _excep_addr;
 
 /* Enum identifying the cause */
 typedef enum {
@@ -91,7 +91,7 @@ typedef enum {
 } excep_code;
 
 /* Code identifying the cause of the exception (CP0 Cause register). */
-static excep_code _excep_code;
+volatile excep_code _excep_code;
 
 // </editor-fold>
 
