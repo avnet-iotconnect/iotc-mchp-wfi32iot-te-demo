@@ -243,3 +243,34 @@ static UINT unix_time_get(ULONG *unix_time)
     return(NX_SUCCESS);
 }
 #endif
+
+// hack in system time support
+#define IOTC_NEEDS_C_TIME
+#ifdef IOTC_NEEDS_C_TIME
+time_t time(time_t *t) {
+	ULONG time_now;
+	if (NX_SUCCESS != unix_time_get(&time_now)) {
+		return -1;
+	}
+	return (time_t) time_now;
+}
+#endif
+
+#define IOTC_NEEDS_GETTIMEOFDAY
+#if defined(IOTC_NEEDS_GETTIMEOFDAY) || defined(IOTC_NEEDS_GETTIMEOFDAY_OU)
+// _gettimeofday override provides access to time() function that's needed for the IoTConnect C library
+#ifdef IOTC_NEEDS_GETTIMEOFDAY
+int __gettimeofday(struct timeval *tv, void *tzvp) {
+#else // IOTC_NEEDS_GETTIMEOFDAY_OU with one underscore
+int _gettimeofday(struct timeval *tv, void *tzvp) {
+#endif
+    // if either no time, or someone is trying to use timezone offset, we cannot support
+	ULONG time_now;
+    if (NX_SUCCESS != unix_time_get(&time_now)) {
+    	return -1;
+    }
+    tv->tv_sec = (time_t)time_now;
+    tv->tv_usec = 0L;
+    return 0;  // return non-zero for error
+} // end _gettimeofday()
+#endif

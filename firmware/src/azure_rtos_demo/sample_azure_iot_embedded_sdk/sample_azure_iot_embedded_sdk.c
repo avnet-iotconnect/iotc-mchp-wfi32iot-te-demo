@@ -23,6 +23,11 @@
 /* Definitions and function prototypes required by the application */
 #include "app.h"
 
+#include "iotconnect_lib.h"
+#include "iotconnect_telemetry.h"
+
+static IotclConfig cfg;
+
 /* Maximum number of characters in a telemetry message */
 #define TELEMETRY_MSGLEN_MAX 90
 
@@ -420,9 +425,9 @@ UINT iothub_hostname_length = 0;
 UINT iothub_device_id_length = 0;
 #else
 UCHAR *iothub_hostname = (UCHAR *)HOST_NAME;
-UCHAR *iothub_device_id = (UCHAR *)DEVICE_ID;
+UCHAR *iothub_device_id = (UCHAR *)REGISTRATION_ID; // Use registration ID from cloud.cfg
 UINT iothub_hostname_length = sizeof(HOST_NAME) - 1;
-UINT iothub_device_id_length = sizeof(DEVICE_ID) - 1;
+UINT iothub_device_id_length = strlen(REGISTRATION_ID);
 #endif /* ENABLE_DPS_SAMPLE */
 
 #ifdef ENABLE_DPS_SAMPLE
@@ -848,11 +853,12 @@ void send_telemetry_message(ULONG parameter, UCHAR *message, UINT mesg_length)
         nx_azure_iot_hub_client_telemetry_message_delete(packet_ptr);
         return;
     }
-    printf("%s\r\n", message);   
+    //printf("%s\r\n", message);   
 }
 
 void send_button_event(ULONG parameter, UINT number, UINT count)
 {
+    #if 0
     CHAR buffer[TELEMETRY_MSGLEN_MAX];
     UINT buffer_length;
 
@@ -864,17 +870,116 @@ void send_button_event(ULONG parameter, UINT number, UINT count)
     buffer_length = (UINT)snprintf(buffer, sizeof(buffer),
             "{\"press_count\": %.2f}", (double)(button_press_data.sw1_press_count + button_press_data.sw2_press_count));
     send_telemetry_message(parameter, (UCHAR *)buffer, buffer_length);
+    #endif
+}
+
+#define PRINT_BUFF_SIZE 128
+// workaround for the UART having issues printing long lines
+static void print_string(const char* str) {
+    
+    static char buff[PRINT_BUFF_SIZE];
+    
+    for (int c = 0; c < strlen(str); c+=PRINT_BUFF_SIZE) {
+        size_t ccount = strlen(&str[c]) < PRINT_BUFF_SIZE ? strlen(&str[c]) : PRINT_BUFF_SIZE;
+        strncpy(buff, &str[c], ccount);
+        buff[ccount] = 0;
+        printf("%s", buff);
+        fflush(stdout);
+        tx_thread_sleep(100);
+    }
+    printf("\r\n");
+}
+
+static void send_telemetry_data(){ 
+    float temperature, pressure;    
+    IotclMessageHandle msg = iotcl_telemetry_create();
+#ifdef WFI32IOT_SENSORS
+#if 0
+    //printf("\r\n<WFI32-IoT> Reading temperature & light sensors...\r\n");
+    buffer_length = (UINT)snprintf(buffer, sizeof(buffer),
+            "{\"WFI32IoT_temperature\": %u, \"WFI32IoT_light\": %u}",
+            APP_SENSORS_readTemperature(), APP_SENSORS_readLight() );
+    send_telemetry_message(parameter, (UCHAR *)buffer, buffer_length);
+#endif
+    iotcl_telemetry_set_number(msg, "WFI32IoT_temperature", APP_SENSORS_readTemperature());
+    iotcl_telemetry_set_number(msg, "WFI32IoT_light", APP_SENSORS_readLight());
+#endif /* WFI32IOT_SENSORS */
+#ifdef CLICK_ULTRALOWPRESS
+    if (ULTRALOWPRESS_status == ULTRALOWPRESS_OK)
+    {
+        if (ULTRALOWPRESS_isReady())
+        {
+            //printf("\r\n<ULP Click> STATUS [ %x ] ", APP_SENSORS_data.i2c.rxBuffer[0]);
+            ULTRALOWPRESS_clearStatus();
+            temperature = ULTRALOWPRESS_getTemperature();
+            //printf("DSP_T [ %x ] ", APP_SENSORS_data.i2c.rxBuffer[0]);
+            pressure = ULTRALOWPRESS_getPressure();     
+            //printf("DSP_S [ %x ]\r\n", APP_SENSORS_data.i2c.rxBuffer[0]);
+
+            iotcl_telemetry_set_number(msg, "ULP_temperature", temperature);
+            iotcl_telemetry_set_number(msg, "ULP_pressure", pressure);
+#if 0                
+            buffer_length = (UINT)snprintf(buffer, sizeof(buffer),
+                    "{\"ULP_temperature\": %.2f, \"ULP_pressure\": %.2f}",
+                    temperature, pressure );                
+            send_telemetry_message(parameter, (UCHAR *)buffer, buffer_length);
+#endif
+        }
+        else
+        {
+            //printf("\r\n<ULP Click> SM8436 is not ready...\r\n");
+        }
+        //tx_thread_sleep(500);
+    }
+#endif /* CLICK_ULTRALOWPRESS */
+#ifdef CLICK_VAVPRESS
+    if (VAVPRESS_status == VAVPRESS_OK)
+    {
+        if (VAVPRESS_getSensorReadings(&VAVPRESS_param_data, &pressure, &temperature) == VAVPRESS_OK)
+        {
+            //printf("\r\n<VAV Click> Extended data readout ( pressure | temperature ) = [ %x (%i) | %x (%i) ]\r\n",
+                    //APP_SENSORS_data.i2c.rxBuffer[0], VAVPRESS_2sCompToDecimal(APP_SENSORS_data.i2c.rxBuffer[0]),
+                    //APP_SENSORS_data.i2c.rxBuffer[1], VAVPRESS_2sCompToDecimal(APP_SENSORS_data.i2c.rxBuffer[1])
+                  //);
+            //tx_thread_sleep(500);
+            iotcl_telemetry_set_number(msg, "VAV_temperature", temperature);
+            iotcl_telemetry_set_number(msg, "VAV_pressure", pressure);               
+#if 0                
+            buffer_length = (UINT)snprintf(buffer, sizeof(buffer),
+                    "{\"VAV_temperature\": %.2f, \"VAV_pressure\": %.2f}",
+                    temperature, pressure);              
+            send_telemetry_message(parameter, (UCHAR *)buffer, buffer_length);      
+#endif
+        }
+    }
+#endif /* CLICK_VAVPRESS */
+    iotcl_telemetry_set_number(msg, "button1", button_press_data.sw1_press_count);
+    iotcl_telemetry_set_number(msg, "button2", button_press_data.sw2_press_count);    
+#if 0
+   buffer_length = (UINT)snprintf(buffer, sizeof(buffer),
+            "{\"button_event\": {\"button_name\": \"SW%u\", \"press_count\": %u}}", number, count);
+    send_telemetry_message(parameter, (UCHAR *)buffer, buffer_length);
+    
+    utton_press_data.sw1_press_count + button_press_data.sw2_press_count;
+    
+    buffer_length = (UINT)snprintf(buffer, sizeof(buffer),
+            "{\"press_count\": %.2f}", (double)(button_press_data.sw1_press_count + button_press_data.sw2_press_count));
+    send_telemetry_message(parameter, (UCHAR *)buffer, buffer_length);
+#endif
+
+    const char * str = iotcl_create_serialized_string(msg, false);
+    iotcl_telemetry_destroy(msg);
+    send_telemetry_message(0, (UCHAR *)str, strlen(str));
+    print_string(str);        
+    iotcl_destroy_serialized(str);
 }
 
 void sample_telemetry_thread_entry(ULONG parameter)
 {
-    CHAR buffer[TELEMETRY_MSGLEN_MAX];
-    UINT buffer_length;
+    //CHAR buffer[TELEMETRY_MSGLEN_MAX];
+    //UINT buffer_length;
     UCHAR loop = NX_TRUE;
     uint32_t SM8436_serialNumber;
-    float ULP_temperature, VAV_temperature;
-    float ULP_pressure = 0.0;
-    float VAV_pressure = 0.0;    
     NX_PARAMETER_NOT_USED(parameter);
 
     APP_SENSORS_init();
@@ -928,77 +1033,33 @@ void sample_telemetry_thread_entry(ULONG parameter)
     }
     tx_thread_sleep(100);
 #endif /* CLICK_VAVPRESS */
-        
+    char* cpid_duid = malloc(strlen(REGISTRATION_ID) + 1);
+    strcpy(cpid_duid, REGISTRATION_ID);
+
+    cfg.telemetry.dtg = IOTCONNECT_DTG;
+    cfg.device.env = IOTCONNECT_DTG;
+    cfg.device.cpid = cpid_duid;
+    int i;
+    for (i = 0; i < strlen(cpid_duid) - 1; i++) {
+        if (cpid_duid[i] == '-') {
+            cpid_duid[i] = 0;
+            cfg.device.duid = &cpid_duid[i+1];
+            break;
+        }
+    }
+    printf("IoTConnect Config: CPID:%s DUID %s\r\n", cfg.device.cpid, cfg.device.duid);
+    iotcl_init(&cfg);
+    
+    tx_thread_sleep(100);
+            
     /* Loop to send telemetry messages */
     while (loop)
     {
-#ifdef WFI32IOT_SENSORS
-        //printf("\r\n<WFI32-IoT> Reading temperature & light sensors...\r\n");
-        buffer_length = (UINT)snprintf(buffer, sizeof(buffer),
-                "{\"WFI32IoT_temperature\": %u, \"WFI32IoT_light\": %u}",
-                APP_SENSORS_readTemperature(), APP_SENSORS_readLight() );
-        send_telemetry_message(parameter, (UCHAR *)buffer, buffer_length);
-#endif /* WFI32IOT_SENSORS */
-#ifdef CLICK_ULTRALOWPRESS
-        if (ULTRALOWPRESS_status == ULTRALOWPRESS_OK)
-        {
-            if (ULTRALOWPRESS_isReady())
-            {
-                //printf("\r\n<ULP Click> STATUS [ %x ] ", APP_SENSORS_data.i2c.rxBuffer[0]);
-                ULTRALOWPRESS_clearStatus();
-                ULP_temperature = ULTRALOWPRESS_getTemperature();
-                //printf("DSP_T [ %x ] ", APP_SENSORS_data.i2c.rxBuffer[0]);
-                ULP_pressure = ULTRALOWPRESS_getPressure();     
-                //printf("DSP_S [ %x ]\r\n", APP_SENSORS_data.i2c.rxBuffer[0]);
-                buffer_length = (UINT)snprintf(buffer, sizeof(buffer),
-                        "{\"ULP_temperature\": %.2f, \"ULP_pressure\": %.2f}",
-                        ULP_temperature, ULP_pressure );                
-                send_telemetry_message(parameter, (UCHAR *)buffer, buffer_length);
-                if (ULP_pressure > ALARM_PRESSURE_PA)
-                {
-                    appConnectStatus.alarm = true;
-                }
-            }
-            else
-            {
-                //printf("\r\n<ULP Click> SM8436 is not ready...\r\n");
-            }
-            //tx_thread_sleep(500);
-        }
-#endif /* CLICK_ULTRALOWPRESS */
-#ifdef CLICK_VAVPRESS
-        if (VAVPRESS_status == VAVPRESS_OK)
-        {
-            if (VAVPRESS_getSensorReadings(&VAVPRESS_param_data, &VAV_pressure, &VAV_temperature) == VAVPRESS_OK)
-            {
-                //printf("\r\n<VAV Click> Extended data readout ( pressure | temperature ) = [ %x (%i) | %x (%i) ]\r\n",
-                        //APP_SENSORS_data.i2c.rxBuffer[0], VAVPRESS_2sCompToDecimal(APP_SENSORS_data.i2c.rxBuffer[0]),
-                        //APP_SENSORS_data.i2c.rxBuffer[1], VAVPRESS_2sCompToDecimal(APP_SENSORS_data.i2c.rxBuffer[1])
-                      //);
-                //tx_thread_sleep(500);
-                buffer_length = (UINT)snprintf(buffer, sizeof(buffer),
-                        "{\"VAV_temperature\": %.2f, \"VAV_pressure\": %.2f}",
-                        VAV_temperature, VAV_pressure);              
-                send_telemetry_message(parameter, (UCHAR *)buffer, buffer_length);
-                if (VAV_pressure > ALARM_PRESSURE_PA)
-                {
-                    appConnectStatus.alarm = true;
-                }
-            }
-        }
-#endif /* CLICK_VAVPRESS */
-#ifdef SEND_LED_PROPERTIES_WITH_TELEMETRY
-        sample_reported_properties_send_action(&iothub_client);
-#endif /* SEND_LED_PROPERTIES_WITH_TELEMETRY */
-    if ( (ULP_pressure < ALARM_PRESSURE_PA) &&
-         (VAV_pressure < ALARM_PRESSURE_PA) )
-    {
-        appConnectStatus.alarm = false; 
-    }
+        send_telemetry_data();
 #ifdef PNP_CERTIFICATION_TESTING
         send_button_event(parameter, 1, button_press_data.sw1_press_count);
 #endif /* PNP_CERTIFICATION_TESTING */
-        tx_thread_sleep(AZ_telemetryInterval * NX_IP_PERIODIC_RATE);
+        tx_thread_sleep(2 * NX_IP_PERIODIC_RATE);
     }
 }
 #endif /* DISABLE_TELEMETRY_SAMPLE */
@@ -1258,16 +1319,15 @@ void sample_app_ctrl_thread_entry(ULONG parameter)
     while (loop)
     {
         APP_LED_refresh();
-        APP_STATUS_update();
 
         if (button_press_data.flag.sw1 == true)
         {
-            send_button_event(parameter, 1, button_press_data.sw1_press_count);
+            //send_button_event(parameter, 1, button_press_data.sw1_press_count);
             button_press_data.flag.sw1 = false;  
         }
         if (button_press_data.flag.sw2 == true)
         {
-            send_button_event(parameter, 2, button_press_data.sw2_press_count);
+            //send_button_event(parameter, 2, button_press_data.sw2_press_count);
             button_press_data.flag.sw2 = false;  
         }
         

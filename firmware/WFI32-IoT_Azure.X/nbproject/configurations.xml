@@ -363,6 +363,16 @@
           <itemPath>../src/config/pic32mz_w1/interrupts.h</itemPath>
         </logicalFolder>
       </logicalFolder>
+      <logicalFolder name="include" displayName="iotc-c-lib" projectFiles="true">
+        <itemPath>../src/iotc-c-lib/include/iotconnect_lib_config.h</itemPath>
+        <itemPath>../src/iotc-c-lib/include/iotconnect_device_identity.h</itemPath>
+        <itemPath>../src/iotc-c-lib/include/iotconnect_lib.h</itemPath>
+        <itemPath>../src/iotc-c-lib/include/iotconnect_telemetry.h</itemPath>
+        <itemPath>../src/iotc-c-lib/include/iotconnect_event.h</itemPath>
+        <itemPath>../src/iotc-c-lib/include/iotconnect_common.h</itemPath>
+        <itemPath>../src/iotc-c-lib/include/iotconnect_discovery_v3.h</itemPath>
+        <itemPath>../src/iotc-c-lib/include/iotconnect_discovery.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f2" displayName="third_party" projectFiles="true">
         <logicalFolder name="f1" displayName="azure_rtos" projectFiles="true">
           <logicalFolder name="f2" displayName="filex" projectFiles="true">
@@ -888,7 +898,6 @@
       <itemPath>../src/app_led.h</itemPath>
       <itemPath>../src/app_switch.h</itemPath>
       <itemPath>../src/az_util.h</itemPath>
-      <itemPath>../src/app_status.h</itemPath>
       <itemPath>../src/az_led.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -1240,6 +1249,15 @@
           <itemPath>../src/config/pic32mz_w1/exceptions.c</itemPath>
           <itemPath>../src/config/pic32mz_w1/pmu_init.c</itemPath>
         </logicalFolder>
+      </logicalFolder>
+      <logicalFolder name="src" displayName="iotc-c-lib" projectFiles="true">
+        <itemPath>../src/iotc-c-lib/src/iotconnect_event.c</itemPath>
+        <itemPath>../src/iotc-c-lib/src/iotconnect_telemetry.c</itemPath>
+        <itemPath>../src/iotc-c-lib/src/iotconnect_discovery_v3.c</itemPath>
+        <itemPath>../src/iotc-c-lib/src/iotconnect_discovery.c</itemPath>
+        <itemPath>../src/iotc-c-lib/src/iotconnect_device_identity.c</itemPath>
+        <itemPath>../src/iotc-c-lib/src/iotconnect_lib.c</itemPath>
+        <itemPath>../src/iotc-c-lib/src/iotconnect_common.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f2" displayName="third_party" projectFiles="true">
         <logicalFolder name="f1" displayName="azure_rtos" projectFiles="true">
@@ -2711,7 +2729,7 @@
       <itemPath>../src/app_led.c</itemPath>
       <itemPath>../src/app_switch.c</itemPath>
       <itemPath>../src/az_util.c</itemPath>
-      <itemPath>../src/app_status.c</itemPath>
+      <itemPath>../src/az_led.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -2769,7 +2787,7 @@
         <platformTool>pkob4hybrid</platformTool>
         <languageToolchain>XC32</languageToolchain>
         <languageToolchainVersion>4.10</languageToolchainVersion>
-        <platform>3</platform>
+        <platform>2</platform>
       </toolsSet>
       <packs>
         <pack name="PIC32MZ-W_DFP" vendor="Microchip" version="1.6.220"/>
@@ -2879,7 +2897,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value=" ../src/config/pic32mz_w1/third_party_adapter/azure_rtos/src/tcpip;../src;../src/config/pic32mz_w1;../src/config/pic32mz_w1/driver/wifi/pic32mzw1/include/;../src/config/pic32mz_w1/library/cryptoauthlib;../src/config/pic32mz_w1/library/cryptoauthlib/crypto;../src/config/pic32mz_w1/library/cryptoauthlib/pkcs11;../src/config/pic32mz_w1/library/cryptoauthlib/tng;../src/config/pic32mz_w1/system/fs/fat_fs/file_system;../src/config/pic32mz_w1/system/fs/fat_fs/hardware_access;../src/config/pic32mz_w1/third_party_adapter/azure_rtos;../src/config/pic32mz_w1/third_party_adapter/azure_rtos/src;../src/config/pic32mz_w1/third_party_adapter/azure_rtos/src/tcpip;../src/config/pic32mz_w1/threadx_config;../src/third_party/azure_rtos/filex/common/inc;../src/third_party/azure_rtos/filex/ports/mips/gnu/inc;../src/third_party/azure_rtos/netxduo;../src/third_party/azure_rtos/netxduo/addons;../src/third_party/azure_rtos/netxduo/addons/azure_iot;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure-sdk-for-c/sdk/inc;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure_iot_security_module;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure_iot_security_module/inc;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure_iot_security_module/inc/configs/RTOS_BASE_UT;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure_iot_security_module/iot-security-module-core/deps/flatcc/include;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure_iot_security_module/iot-security-module-core/inc;../src/third_party/azure_rtos/netxduo/addons/cloud;../src/third_party/azure_rtos/netxduo/addons/dhcp;../src/third_party/azure_rtos/netxduo/addons/dns;../src/third_party/azure_rtos/netxduo/addons/mqtt;../src/third_party/azure_rtos/netxduo/addons/sntp;../src/third_party/azure_rtos/netxduo/common/inc;../src/third_party/azure_rtos/netxduo/crypto_libraries/inc;../src/third_party/azure_rtos/netxduo/nx_secure/inc;../src/third_party/azure_rtos/netxduo/nx_secure/ports;../src/third_party/azure_rtos/netxduo/ports/mips/gnu/inc;../src/third_party/rtos/threadx/common/inc;../src/third_party/rtos/threadx/ports/pic32mz/mplabx/inc;..\src\azure_rtos_demo"/>
+                  value="../src/config/pic32mz_w1/third_party_adapter/azure_rtos/src/tcpip;../src;../src/config/pic32mz_w1;../src/config/pic32mz_w1/driver/wifi/pic32mzw1/include/;../src/config/pic32mz_w1/library/cryptoauthlib;../src/config/pic32mz_w1/library/cryptoauthlib/crypto;../src/config/pic32mz_w1/library/cryptoauthlib/pkcs11;../src/config/pic32mz_w1/library/cryptoauthlib/tng;../src/config/pic32mz_w1/system/fs/fat_fs/file_system;../src/config/pic32mz_w1/system/fs/fat_fs/hardware_access;../src/config/pic32mz_w1/third_party_adapter/azure_rtos;../src/config/pic32mz_w1/third_party_adapter/azure_rtos/src;../src/config/pic32mz_w1/third_party_adapter/azure_rtos/src/tcpip;../src/config/pic32mz_w1/threadx_config;../src/third_party/azure_rtos/filex/common/inc;../src/third_party/azure_rtos/filex/ports/mips/gnu/inc;../src/third_party/azure_rtos/netxduo;../src/third_party/azure_rtos/netxduo/addons;../src/third_party/azure_rtos/netxduo/addons/azure_iot;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure-sdk-for-c/sdk/inc;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure_iot_security_module;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure_iot_security_module/inc;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure_iot_security_module/inc/configs/RTOS_BASE_UT;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure_iot_security_module/iot-security-module-core/deps/flatcc/include;../src/third_party/azure_rtos/netxduo/addons/azure_iot/azure_iot_security_module/iot-security-module-core/inc;../src/third_party/azure_rtos/netxduo/addons/cloud;../src/third_party/azure_rtos/netxduo/addons/dhcp;../src/third_party/azure_rtos/netxduo/addons/dns;../src/third_party/azure_rtos/netxduo/addons/mqtt;../src/third_party/azure_rtos/netxduo/addons/sntp;../src/third_party/azure_rtos/netxduo/common/inc;../src/third_party/azure_rtos/netxduo/crypto_libraries/inc;../src/third_party/azure_rtos/netxduo/nx_secure/inc;../src/third_party/azure_rtos/netxduo/nx_secure/ports;../src/third_party/azure_rtos/netxduo/ports/mips/gnu/inc;../src/third_party/rtos/threadx/common/inc;../src/third_party/rtos/threadx/ports/pic32mz/mplabx/inc;../src/azure_rtos_demo;../src/iotc-c-lib/include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="true"/>
@@ -2948,7 +2966,7 @@
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-cross-reference-file" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
-        <property key="heap-size" value="1024"/>
+        <property key="heap-size" value="4096"/>
         <property key="input-libraries" value=""/>
         <property key="kseg-length" value=""/>
         <property key="kseg-origin" value=""/>

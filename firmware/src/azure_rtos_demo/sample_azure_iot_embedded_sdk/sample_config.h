@@ -21,10 +21,13 @@ extern   "C" {
 /*** Azure IoT embedded C SDK Configuration ***/
 #define MODULE_ID              ""
 /* Required when DPS is used.  */
-#define ENABLE_DPS_SAMPLE
+//#define ENABLE_DPS_SAMPLE
 #define ENDPOINT                       "global.azure-devices-provisioning.net"
-#define ID_SCOPE                       default_id_scope
-#define REGISTRATION_ID                default_registration_id
+#define ID_SCOPE                        default_id_scope
+#define REGISTRATION_ID                 default_registration_id //"avtds-WFi32IoT-1"
+#define IOTCONNECT_DTG                  "" // DTG value from your template
+#define IOTCONNECT_ENV                  "" // Your environment. Typically Avnet (avnetpoc), prod, qa etc.
+#define HOST_NAME                       "" // Your IoTHub hostname from device connection information
 #define SAMPLE_MAX_BUFFER              (256)
             
     
@@ -39,7 +42,7 @@ extern   "C" {
 #define AZ_TELEMETRYINTERVAL_DEFAULT           5
 
 /* Use certificate-based authentication with PKCS#11/ECC608 */
-/* Comment out the following 3 definitions to use SAS token authentication */    
+/* Comment out the following 3 definitions to use SAS token authentication */
     
 #define USE_X509_WITH_ECC608
 #define USE_DEVICE_CERTIFICATE 1

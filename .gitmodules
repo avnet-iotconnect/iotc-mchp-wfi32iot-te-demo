@@ -1,0 +1,3 @@
+[submodule "firmware/src/iotc-c-lib"]
+	path = firmware/src/iotc-c-lib
+	url = https://github.com/avnet-iotconnect/iotc-c-lib.git
