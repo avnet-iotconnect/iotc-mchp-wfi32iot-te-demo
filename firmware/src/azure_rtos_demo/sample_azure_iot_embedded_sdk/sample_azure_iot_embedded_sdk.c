@@ -1032,21 +1032,22 @@ void sample_telemetry_thread_entry(ULONG parameter)
     }
     tx_thread_sleep(100);
 #endif /* CLICK_VAVPRESS */
-    char* cpid_duid = malloc(strlen(REGISTRATION_ID) + 1);
+    size_t composite_str_len = strlen(REGISTRATION_ID);
+    char* cpid_duid = malloc(composite_str_len + 1);
     strcpy(cpid_duid, REGISTRATION_ID);
 
     cfg.telemetry.dtg = IOTCONNECT_DTG;
     cfg.device.env = IOTCONNECT_ENV;
     cfg.device.cpid = cpid_duid;
     int i;
-    for (i = 0; i < strlen(cpid_duid) - 1; i++) {
+    for (i = 0; i < composite_str_len - 1; i++) {
         if (cpid_duid[i] == '-') {
             cpid_duid[i] = 0;
             cfg.device.duid = &cpid_duid[i+1];
             break;
         }
     }
-    if (i >= strlen(cpid_duid)) {
+    if (i >= composite_str_len -1) {
         printf("Error: Unable to parse CPID from Registration ID.\r\n");
         while (true) tx_thread_sleep(1000); // don't continue
     }
@@ -1057,7 +1058,7 @@ void sample_telemetry_thread_entry(ULONG parameter)
         while (true) tx_thread_sleep(1000); // don't continue
     }
 
-    printf("IoTConnect Config: CPID:%s DUID %s\r\n", cfg.device.cpid, cfg.device.duid);
+    printf("IoTConnect Config: CPID:%s DUID:%s\r\n", cfg.device.cpid, cfg.device.duid);
     iotcl_init(&cfg);
     
     tx_thread_sleep(100);
