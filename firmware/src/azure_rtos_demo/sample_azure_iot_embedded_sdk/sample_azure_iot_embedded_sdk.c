@@ -594,7 +594,7 @@ UINT loop = NX_TRUE;
         nx_azure_iot_delete(&nx_azure_iot);
         return;
     }
-    
+
     if ((status = sample_initialize_iothub(&iothub_client)))
     {
         printf("Failed to initialize iothub client: error code = 0x%08x\r\n", status);
@@ -1036,7 +1036,7 @@ void sample_telemetry_thread_entry(ULONG parameter)
     strcpy(cpid_duid, REGISTRATION_ID);
 
     cfg.telemetry.dtg = IOTCONNECT_DTG;
-    cfg.device.env = IOTCONNECT_DTG;
+    cfg.device.env = IOTCONNECT_ENV;
     cfg.device.cpid = cpid_duid;
     int i;
     for (i = 0; i < strlen(cpid_duid) - 1; i++) {
@@ -1046,6 +1046,17 @@ void sample_telemetry_thread_entry(ULONG parameter)
             break;
         }
     }
+    if (i >= strlen(cpid_duid)) {
+        printf("Error: Unable to parse CPID from Registration ID.\r\n");
+        while (true) tx_thread_sleep(1000); // don't continue
+    }
+    if (!cfg.telemetry.dtg || 0 == strlen(cfg.telemetry.dtg ) ||
+        !cfg.device.env || 0 == strlen(cfg.device.env )
+    ) {
+        printf("Error: Please configure the template DTG and Environment values in sample_config.h\r\n");
+        while (true) tx_thread_sleep(1000); // don't continue
+    }
+
     printf("IoTConnect Config: CPID:%s DUID %s\r\n", cfg.device.cpid, cfg.device.duid);
     iotcl_init(&cfg);
     
