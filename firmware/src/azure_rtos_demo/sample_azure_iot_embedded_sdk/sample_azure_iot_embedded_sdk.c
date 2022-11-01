@@ -547,8 +547,7 @@ static void log_callback(az_log_classification classification, UCHAR *msg, UINT 
 {
     if (classification == AZ_LOG_IOT_AZURERTOS)
     {
-        printf("%.*s", msg_len, (CHAR *)msg);
-       printf("%.*s", msg_len, (CHAR *)msg);
+        printf("%.*s\r\n", msg_len, (CHAR *)msg);
     }
 }
 
