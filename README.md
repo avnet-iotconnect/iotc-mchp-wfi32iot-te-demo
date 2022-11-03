@@ -5,41 +5,41 @@ modified to support IoTConnect. This project is not an SDK, and it is
 intended to be used as a demo.
 
 The project demonstrates the use of WFI32-IoT board's built-in 
-secure element to connect to IoTConnect and relay the VAV Press and
+secure element to connect to IoTConnect and relay the VAV Press Click 
 and Ultra-Low Press Click boards.
 
 ### Hardware Setup With Sensors
 
-This can run on a standalone WFI32-IoT board. 
-If you wish to add support for telemetry from pressure Clik Boards from 
-the original project, simply follow the instructions at the original 
-project's 
+This project can run on a standalone WFI32-IoT board. 
+If you wish to add support for telemetry from pressure Clik Boards, 
+simply follow the instructions at the original project's at
 [Adding Extra Sensors](https://github.com/MicrochipTech/WFI32-IoT_Azure_PnP_Demo#adding-extra-sensors-to-the-wfi32-iot-board)
-section.
+section to set up the hardware.
 
 ### Initial Setup
 * Clone this repo using Got command line:
 ```shell
 git clone --recurse-submodules <http://this/repo/URL>
 ```
-* Install Microchip `MPLAB X` tool chain for embedded code development on 32-bit architecture MCU/MPU platforms (made up of 2 major components)
+* Install Microchip `MPLAB X` toolchain for embedded code development on 32-bit architecture MCU/MPU platforms:
 
     - [MPLAB X IDE](https://www.microchip.com/mplab/mplab-x-ide)
 
     - [MPLAB XC32 Compiler](https://www.microchip.com/en-us/development-tools-tools-and-software/mplab-xc-compilers#tabs)
     
-NOTE: This demonstration project was tested successfully with MPLab X IDE 6.0 and XC32 v4.10, and in general should work with later versions of the compiler as they become available. If you encounter issues building the project, it is recommended to download XC32 v4.10 from the [MPLAB Development Ecosystem Downloads Archive](https://www.microchip.com/en-us/tools-resources/archives/mplab-ecosystem) (to fall back to the version Microchip successfully tested prior to release). 
+NOTE: This demo was tested successfully with MPLab X IDE 6.0 and XC32 v4.10, and in general should work with later versions of the compiler as they become available. If you encounter issues building the project, it is recommended to download XC32 v4.10 from the [MPLAB Development Ecosystem Downloads Archive](https://www.microchip.com/en-us/tools-resources/archives/mplab-ecosystem) (to fall back to the version Microchip successfully tested prior to release). 
 
 ### Project Build
 
 * Open MPLab X IDE.
-* Load the project and debug it from the menu via Debug->Debug Project
+* Load the project from the [firmware/WFI32-IoT_Azure.X](firmware/WFI32-IoT_Azure.) directory with MPLab IDE.
+* Debug the project from the menu via Debug->Debug Project,
 or by clicking the Debug Project button in the toolbar. We need to access the
 mass storage device on the USB interface in order to obtain the device
 certificate in the next step.
 * Once the device starts running, a mass storage device should appear after some time. 
 Note the device certificate in the file *snXXXXXXXXXXXXXXXXXX_device.pem*.
-* Use that device certificate file as an argument to openssl command:
+* Use that device certificate file as an argument to openssl the following command:
 
 ```shell
 openssl x509 -noout -fingerprint  -inform pem -in path/to/snXXXXXXXXXXXXXXXXXX_device.pem 
@@ -49,12 +49,12 @@ openssl x509 -noout -fingerprint  -inform pem -in path/to/snXXXXXXXXXXXXXXXXXX_d
 You will need to copy that value without the colons into the device IoTConnect setup 
 step below.
 * Alternatively you can use an online site like [this one](https://www.samltool.com/fingerprint.php)
-to extract the fingerprint. Though leaking device certificates online would not allow 
+to extract the fingerprint. Though leaking device certificates alone would not allow 
 an attacker to mimic your device, other data from the device certificate could potentially be used.
 
 ### IoTConnect Device Setup
 
-* In IoTConnect web UI, create a new device template using Self-Signed authentication 
+* In IoTConnect web UI, create a new device template using Self-Signed authentication type
 with 1.0 device protocol version. 
 * Add the following attributes as *NUMBER* values to your template.
   * For WFI32-IoT board's built-in sensors:
@@ -96,7 +96,7 @@ per your WiFi credentials. The file should look like one of the following exampl
         ```bash
         CMD:SEND_UART=wifi MY_SSID,MY_PSWD,4
         ```
-* At this point the project should be rebuilt and loaded onto the board again.
+* At this point the project is ready to be rebuilt and loaded onto the board with newly configured values.
 
 NOTE: When editing files on the USB Mass Storage deice, 
 sometimes the OS may cache the changes you have made, 
