@@ -1,8 +1,7 @@
-# Provisioning the Microchip WFI32-IoT Development Board (Part No. EV36W50A) for Azure IoT Central
-
+# Provisioning the Microchip WFI32-IoT Development Board (Part No. EV36W50A) for Avnet IoTConnect
 ## Introduction
 
- This document describes how to connect the WFI32-IoT Development Board (featuring the fully certified, highly integrated WFI32E01PC wireless module) to Azure IoT Central which leverages Microsoft’s Azure RTOS to enable better experiences of embedded firmware development for Cloud applications.
+ This document describes how to connect the WFI32-IoT Development Board (featuring the fully certified, highly integrated WFI32E01PC wireless module) to Avnet IoTConnect built on Microsoft Azure Cloud services, including Azure IoT Hub, and leverages Azure RTOS to enable better experiences of embedded firmware development for Cloud applications.
 
 <img src=".//media/image1.png" />
 
@@ -14,11 +13,11 @@
   - [Microchip “Provisioning” vs. Microsoft “Provisioning”](#microchip-provisioning-vs-microsoft-provisioning)
   - [TLS Connection](#tls-connection)
   - [MQTT Connection](#mqtt-connection)
-- [Create an Azure Account and Subscription](#create-an-azure-account-and-subscription)
+- [Request an IoTConnect Subscription](#create-an-azure-account-and-subscription)
 - [Adding Extra Sensors to the WFI32 IoT Board](#adding-extra-sensors-to-the-wfi32-iot-board)
 - [Program the WFI32-IoT Development Board](#program-the-wfi32-iot-development-board)
   - [1. Install the Development Tools](#1-install-the-development-tools)
-  - [2. Connect to Azure IoT Central](#2-connect-to-azure-iot-central)
+  - [2. Connect to Avnet IoTConnect](#2-connect-to-avnet-iotconnect)
  - [Frequently Asked Questions](#frequently-asked-questions)
 - [References](#references)
 - [Conclusion](#conclusion)
@@ -50,7 +49,7 @@ This high-level architecture description summarizes the interactions between the
 
 - [Device Provisioning Service (DPS)](https://docs.microsoft.com/en-us/azure/iot-dps/): a helper service for IoT Hub that enables zero-touch, just-in-time provisioning to the right IoT Hub without requiring human intervention, allowing customers to automatically provision millions of devices in a secure and scalable manner
 
-On successful authentication, the WFI32-IoT Development Board will be provisioned to the correct IoT Hub that is pre-linked to DPS during the setup process. We can then leverage Azure IoT Central's application platform services (easy-to-use, highly intuitive web-based graphical tools used for interacting with and testing your IoT devices at scale).
+On successful authentication, the WFI32-IoT Development Board will be provisioned to the correct IoT Hub that is pre-linked to DPS during the setup process. We can then leverage Avnet's IoTConnect application platform services (easy-to-use, highly intuitive web-based graphical tools used for interacting with and testing your IoT devices at scale).
 
 ### TLS connection
 
@@ -116,11 +115,11 @@ Embedded software development tools from Microchip need to be pre-installed in o
 
 Click this link for the setup procedure (when completed, return to this page): [Development Tools Installation](./Dev_Tools_Install.md)
 
-### 2. Connect to Azure IoT Central
+### 2. Connect to Avnet IoTConnect
 
-Azure IoT technologies and services provide you with options to create a wide variety of IoT solutions that enable digital transformation for your organization. Use [Azure IoT Central](https://docs.microsoft.com/en-us/azure/iot-central/core/overview-iot-central), a managed IoT application platform, to build and deploy a secure, enterprise-grade IoT solution. IoT Central features a collection of industry-specific application templates, such as retail and healthcare, to accelerate your solution development processes.
+Azure IoT technologies and services provide you with options to create a wide variety of IoT solutions that enable digital transformation for your organization. Use [IoTConnect](https://iotconnect.io/enterprise-IoT-platform.html), a managed IoT application platform, to build and deploy a secure, enterprise-grade IoT solution. IoTConnect features a collection of industry-specific application templates, such as retail and healthcare, to accelerate your solution development processes.
 
-[Azure IoT Central](https://docs.microsoft.com/en-us/azure/iot-central/core/overview-iot-central) is an IoT application platform that reduces the burden and cost of developing, managing, and maintaining enterprise-grade IoT solutions. Choosing to build with IoT Central gives you the opportunity to focus time, money, and energy on transforming your business with IoT data, rather than just maintaining and updating a complex and continually evolving IoT infrastructure.
+[IoTConnect](https://iotconnect.io/enterprise-IoT-platform.html) is an IoT application platform that reduces the burden and cost of developing, managing, and maintaining enterprise-grade IoT solutions. Choosing to build with IoTConnect gives you the opportunity to focus time, money, and energy on transforming your business with IoT data, rather than just maintaining and updating a complex and continually evolving IoT infrastructure.
 
 The web UI lets you quickly connect devices, monitor device conditions, create rules, and manage millions of devices and their data throughout their life cycle. Furthermore, it enables you to act on device insights by extending IoT intelligence into line-of-business applications.
 
@@ -136,26 +135,20 @@ Having issues with connecting the board with Azure IoT services? Check out the [
 
 Refer to the following links for additional information for IoT Explorer, IoT Hub, DPS, Plug and Play model, and IoT Central
 
-•	[Manage cloud device messaging with Azure-IoT-Explorer](https://github.com/Azure/azure-iot-explorer/releases)
+•	[IoTConnect overview](https://help.iotconnect.io/knowledgebase/iotconnect-overview/)
 
-•	[Import the Plug and Play model](https://docs.microsoft.com/en-us/azure/iot-pnp/concepts-model-repository)
+•	[IotConnect quick start guide](https://help.iotconnect.io/knowledgebase/quick-start/)
+
+•	[Onboard a device with IoTConnect](https://help.iotconnect.io/knowledgebase/device-onboarding/)
 
 •	[Configure to connect to IoT Hub](https://docs.microsoft.com/en-us/azure/iot-pnp/quickstart-connect-device-c)
 
-•	[How to use IoT Explorer to interact with the device](https://docs.microsoft.com/en-us/azure/iot-pnp/howto-use-iot-explorer#install-azure-iot-explorer)
+•	[Avnet IoTConnect - All Documentation](https://help.iotconnect.io/)
 
-•	[Azure IoT Central - All Documentation](https://docs.microsoft.com/en-us/azure/iot-central/)
+•	[How to connect devices with X.509 certificates for IoTConnect](https://help.iotconnect.io/knowledgebase/x-509-self-singed-certificate/)
 
-•	[Create an Azure IoT Central application](https://docs.microsoft.com/en-us/azure/iot-central/core/quick-deploy-iot-central)
-
-•	[Manage devices in your Azure IoT Central application](https://docs.microsoft.com/en-us/azure/iot-central/core/howto-manage-devices)
-
-•	[How to connect devices with X.509 certificates for IoT Central](https://docs.microsoft.com/en-us/azure/iot-central/core/how-to-connect-devices-x509)
-
-•	[Configure the IoT Central application dashboard](https://docs.microsoft.com/en-us/azure/iot-central/core/howto-add-tiles-to-your-dashboard)
-
-•	[Customize the IoT Central UI](https://docs.microsoft.com/en-us/azure/iot-central/core/howto-customize-ui)
+•	[Create a new dashboard using the dynamic dashboard feature](https://help.iotconnect.io/documentation/dashboard/create-a-new-dashboard/)
 
 ## Conclusion
 
-You are now able to connect WFI32-IoT to Azure IoT Central and should have deeper knowledge of how all the pieces of the puzzle fit together between Microchip's hardware and Microsoft's Azure Cloud services. Let’s start thinking out of the box and see how you can apply this project to provision securely and quickly a massive number of Microchip devices to Azure and safely manage them through the entire product life cycle.
+You are now able to connect WFI32-IoT to Avnet IoTConnect and should have deeper knowledge of how all the pieces of the puzzle fit together between Microchip's hardware and Microsoft's Azure Cloud services. Let’s start thinking out of the box and see how you can apply this project to provision securely and quickly a massive number of Microchip devices to Azure and safely manage them through the entire product life cycle.
