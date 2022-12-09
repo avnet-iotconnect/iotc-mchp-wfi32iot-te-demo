@@ -3,7 +3,7 @@
 
  This document describes how to connect the WFI32-IoT Development Board (featuring the fully certified, highly integrated WFI32E01PC wireless module) to Avnet IoTConnect built on Microsoft Azure Cloud services, including Azure IoT Hub, and leverages Azure RTOS to enable better experiences of embedded firmware development for Cloud applications.
 
-<img src=".//media/image1.png" />
+<img src=".//media/iotc-wfi32.png" />
 
 ## Table of Contents
 
